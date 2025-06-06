@@ -1,0 +1,23 @@
+services:
+  postgres:
+    image: postgres:15-alpine
+    container_name: postgres-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: pass
+      POSTGRES_DB: db
+    ports:
+      - "5432:5432"
+
+  web:
+    build: .
+    container_name: express-postgres
+    depends_on:
+      - postgres
+    environment:
+      DATABASE_URL: "postgres://user:pass@postgres:5432/db"
+      PORT: "3000"
+    ports:
+      - "3000:3000"
+    restart: unless-stopped
